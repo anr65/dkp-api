@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+.env.backup
+node_modules
+vendor
+storage/framework/cache/*
+storage/framework/sessions/*
+storage/framework/views/*
+storage/logs/*
+bootstrap/cache/*
+.idea
+.vscode
+*.log

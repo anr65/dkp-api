@@ -1,0 +1,915 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "ДКП API Documentation",
+        "description": "API документация для системы договоров купли-продажи автомобилей",
+        "contact": {
+            "email": "support@example.com"
+        },
+        "version": "1.0.0"
+    },
+    "servers": [
+        {
+            "url": "/api",
+            "description": "API Server"
+        }
+    ],
+    "paths": {
+        "/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Авторизация через Telegram",
+                "description": "Двухэтапная авторизация: 1) Отправка кода верификации, 2) Проверка кода и создание сессии",
+                "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "phone_number": {
+                                        "description": "Номер телефона",
+                                        "type": "string",
+                                        "example": "+79991234567"
+                                    },
+                                    "request_id": {
+                                        "description": "ID запроса (получается на первом шаге)",
+                                        "type": "string",
+                                        "example": "req_123abc"
+                                    },
+                                    "code": {
+                                        "description": "Код верификации из Telegram",
+                                        "type": "string",
+                                        "example": "12345"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Успешная авторизация или отправка кода",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "oneOf": [
+                                        {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "request_id": {
+                                                    "type": "string",
+                                                    "example": "req_123abc"
+                                                },
+                                                "message": {
+                                                    "type": "string",
+                                                    "example": "Verification code sent"
+                                                }
+                                            },
+                                            "type": "object"
+                                        },
+                                        {
+                                            "properties": {
+                                                "success": {
+                                                    "type": "boolean",
+                                                    "example": true
+                                                },
+                                                "user": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 1
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "John Doe"
+                                                        },
+                                                        "avatar": {
+                                                            "type": "string",
+                                                            "example": "https://example.com/avatar.jpg",
+                                                            "nullable": true
+                                                        },
+                                                        "created_at": {
+                                                            "type": "string",
+                                                            "format": "date-time"
+                                                        }
+                                                    },
+                                                    "type": "object"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    ]
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Неверный код верификации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Invalid verification code"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "500": {
+                        "description": "Ошибка сервера",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Выход из системы",
+                "description": "Завершение сессии пользователя",
+                "operationId": "28d48c13fca984400ac8de99f54ee13a",
+                "responses": {
+                    "200": {
+                        "description": "Успешный выход",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Logged out successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/current": {
+            "get": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Получить данные текущего пользователя",
+                "description": "Возвращает информацию о текущем авторизованном пользователе",
+                "operationId": "5db954026e7615039741f5dc353bc15f",
+                "responses": {
+                    "200": {
+                        "description": "Данные пользователя",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "user": {
+                                            "properties": {
+                                                "id": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "name": {
+                                                    "type": "string",
+                                                    "example": "John Doe"
+                                                },
+                                                "avatar": {
+                                                    "type": "string",
+                                                    "example": "https://example.com/avatar.jpg",
+                                                    "nullable": true
+                                                },
+                                                "created_at": {
+                                                    "type": "string",
+                                                    "format": "date-time"
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/contracts": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Получить список договоров",
+                "description": "Возвращает список всех договоров с пагинацией",
+                "operationId": "bdbac4711f02b5891f30b4e4b428b701",
+                "parameters": [
+                    {
+                        "name": "pageNo",
+                        "in": "query",
+                        "description": "Номер страницы",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 1,
+                            "example": 1
+                        }
+                    },
+                    {
+                        "name": "pageSize",
+                        "in": "query",
+                        "description": "Количество элементов на странице",
+                        "required": false,
+                        "schema": {
+                            "type": "integer",
+                            "default": 10,
+                            "example": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Список договоров",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contracts list"
+                                        },
+                                        "items": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/components/schemas/Contract"
+                                            }
+                                        },
+                                        "pagination": {
+                                            "properties": {
+                                                "total": {
+                                                    "type": "integer",
+                                                    "example": 100
+                                                },
+                                                "pageNo": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "pageSize": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                },
+                                                "totalPages": {
+                                                    "type": "integer",
+                                                    "example": 10
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "post": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Создать новый договор",
+                "description": "Создает новый договор купли-продажи автомобиля",
+                "operationId": "e3ded96a5b39557f9648d1096f18963e",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "date",
+                                    "city",
+                                    "seller_id",
+                                    "buyer_id",
+                                    "price",
+                                    "car_id"
+                                ],
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "generated",
+                                            "draft"
+                                        ],
+                                        "example": "draft"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-10"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Москва"
+                                    },
+                                    "seller_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "buyer_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "minimum": 0,
+                                        "example": 1500000
+                                    },
+                                    "car_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Договор успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract created successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/contracts/{id}": {
+            "get": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Получить договор по ID",
+                "description": "Возвращает подробную информацию о договоре",
+                "operationId": "b3d9f6c5313123aa3e9b031fd33acb44",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID договора",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Детали договора",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract details"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Договор не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "put": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Обновить договор",
+                "description": "Обновляет существующий договор купли-продажи",
+                "operationId": "3b5da28a2f500b40ef7fe60719c1fe7d",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID договора",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "status": {
+                                        "type": "string",
+                                        "enum": [
+                                            "generated",
+                                            "draft"
+                                        ],
+                                        "example": "draft"
+                                    },
+                                    "date": {
+                                        "type": "string",
+                                        "format": "date",
+                                        "example": "2025-11-10"
+                                    },
+                                    "city": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Москва"
+                                    },
+                                    "seller_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "buyer_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "format": "float",
+                                        "minimum": 0,
+                                        "example": 1500000
+                                    },
+                                    "car_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Договор успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract updated successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Contract"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Договор не найден"
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Contracts"
+                ],
+                "summary": "Удалить договор",
+                "description": "Удаляет договор по ID",
+                "operationId": "2875a4ec610d34760515f5db9974a2f4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID договора",
+                        "required": true,
+                        "schema": {
+                            "type": "integer",
+                            "example": 1
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Договор успешно удален",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Contract deleted successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Договор не найден"
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "schemas": {
+            "Contract": {
+                "title": "Contract",
+                "description": "Договор купли-продажи автомобиля",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "status": {
+                        "type": "string",
+                        "enum": [
+                            "generated",
+                            "draft"
+                        ],
+                        "example": "draft"
+                    },
+                    "date": {
+                        "type": "string",
+                        "example": "10.11.2025"
+                    },
+                    "city": {
+                        "type": "string",
+                        "example": "Москва"
+                    },
+                    "seller": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "buyer": {
+                        "$ref": "#/components/schemas/Person"
+                    },
+                    "car": {
+                        "$ref": "#/components/schemas/Car"
+                    },
+                    "price": {
+                        "type": "string",
+                        "example": "1500000.00"
+                    },
+                    "created_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    },
+                    "updated_at": {
+                        "type": "string",
+                        "format": "date-time"
+                    }
+                },
+                "type": "object"
+            },
+            "Person": {
+                "title": "Person",
+                "description": "Физическое лицо (продавец или покупатель)",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "surname": {
+                        "type": "string",
+                        "example": "Иванов"
+                    },
+                    "name": {
+                        "type": "string",
+                        "example": "Иван"
+                    },
+                    "fathername": {
+                        "type": "string",
+                        "example": "Иванович",
+                        "nullable": true
+                    },
+                    "birthdate": {
+                        "type": "string",
+                        "example": "01.01.1990"
+                    },
+                    "country": {
+                        "type": "string",
+                        "example": "Россия"
+                    },
+                    "index": {
+                        "type": "string",
+                        "example": "123456"
+                    },
+                    "region": {
+                        "type": "string",
+                        "example": "Москва"
+                    },
+                    "passport": {
+                        "$ref": "#/components/schemas/Passport"
+                    },
+                    "avatar": {
+                        "type": "string",
+                        "example": "https://example.com/avatar.jpg",
+                        "nullable": true
+                    }
+                },
+                "type": "object"
+            },
+            "Passport": {
+                "title": "Passport",
+                "description": "Паспортные данные",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "serie": {
+                        "type": "string",
+                        "example": "1234"
+                    },
+                    "number": {
+                        "type": "string",
+                        "example": "567890"
+                    },
+                    "issuer": {
+                        "type": "string",
+                        "example": "ОУФМС России по г. Москве"
+                    },
+                    "issue_date": {
+                        "type": "string",
+                        "example": "01.01.2010"
+                    }
+                },
+                "type": "object"
+            },
+            "Car": {
+                "title": "Car",
+                "description": "Автомобиль",
+                "properties": {
+                    "id": {
+                        "type": "integer",
+                        "example": 1
+                    },
+                    "vin": {
+                        "type": "string",
+                        "example": "WVWZZZ1JZXW123456"
+                    },
+                    "sts": {
+                        "type": "string",
+                        "example": "77AA123456"
+                    },
+                    "pts": {
+                        "type": "string",
+                        "example": "77ББ123456"
+                    },
+                    "plates": {
+                        "type": "string",
+                        "example": "А123БВ777"
+                    },
+                    "model": {
+                        "type": "string",
+                        "example": "Toyota Camry"
+                    },
+                    "type_category": {
+                        "type": "string",
+                        "example": "Легковой автомобиль"
+                    },
+                    "issue_year": {
+                        "type": "string",
+                        "example": "2020"
+                    },
+                    "engine_model": {
+                        "type": "string",
+                        "example": "2AR-FE"
+                    },
+                    "engine_number": {
+                        "type": "string",
+                        "example": "1234567"
+                    },
+                    "chassis_number": {
+                        "type": "string",
+                        "example": "12345678901234567",
+                        "nullable": true
+                    },
+                    "body_number": {
+                        "type": "string",
+                        "example": "12345678901234567"
+                    },
+                    "color": {
+                        "type": "string",
+                        "example": "Черный"
+                    }
+                },
+                "type": "object"
+            }
+        },
+        "securitySchemes": {
+            "cookieAuth": {
+                "type": "apiKey",
+                "name": "laravel_session",
+                "in": "cookie"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Authentication",
+            "description": "Authentication"
+        },
+        {
+            "name": "Contracts",
+            "description": "Contracts"
+        }
+    ]
+}
