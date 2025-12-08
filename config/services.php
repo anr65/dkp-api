@@ -39,4 +39,9 @@ return [
         'gateway_token' => env('TELEGRAM_GATEWAY_TOKEN'),
     ],
 
+    'yandex_ocr' => [
+        'api_key' => env('YANDEX_OCR_API_KEY'),
+        'folder_id' => env('YANDEX_OCR_FOLDER_ID'),
+    ],
+
 ];
