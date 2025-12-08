@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Http\Resources\Api\V1\UserSubscriptionResource;
+use App\Models\SubToUser;
 use App\Models\User;
 use App\Services\TelegramService;
 use Illuminate\Http\JsonResponse;
@@ -215,7 +217,13 @@ class AuthController extends Controller
      *                 @OA\Property(property="id", type="integer", example=1),
      *                 @OA\Property(property="name", type="string", example="John Doe"),
      *                 @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg"),
-     *                 @OA\Property(property="created_at", type="string", format="date-time")
+     *                 @OA\Property(property="created_at", type="string", format="date-time"),
+     *                 @OA\Property(property="sub", type="object", nullable=true,
+     *                     @OA\Property(property="id", type="integer", example=778),
+     *                     @OA\Property(property="name", type="string", example="Договоры без ограничений"),
+     *                     @OA\Property(property="duration", type="integer", example=365),
+     *                     @OA\Property(property="valid_thru", type="string", example="15.09.2026")
+     *                 )
      *             )
      *         )
      *     ),
@@ -242,6 +250,15 @@ class AuthController extends Controller
             ], 401);
         }
 
+        $activeSubscription = SubToUser::where('user_id', $user->id)
+            ->where('valid_thru', '>', now())
+            ->with(['subscription', 'subscriptionDuration'])
+            ->first();
+
+        $subData = $activeSubscription
+            ? new UserSubscriptionResource($activeSubscription)
+            : null;
+
         return response()->json([
             'success' => true,
             'user' => [
@@ -249,6 +266,7 @@ class AuthController extends Controller
                 'name' => $user->name,
                 'avatar' => $user->avatar,
                 'created_at' => $user->created_at,
+                'sub' => $subData,
             ]
         ]);
     }
