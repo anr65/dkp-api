@@ -10,6 +10,58 @@ use Illuminate\Http\Request;
 
 class CarController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/car",
+     *     summary="Создать или обновить автомобиль",
+     *     tags={"Автомобили"},
+     *     security={{"cookieAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             @OA\Property(property="id", type="integer", nullable=true, description="ID автомобиля для обновления", example=1),
+     *             @OA\Property(property="vin", type="string", nullable=true, example="XTA210990Y2696969", maxLength=50),
+     *             @OA\Property(property="sts", type="string", nullable=true, example="77УУ123456", maxLength=20),
+     *             @OA\Property(property="pts", type="string", nullable=true, example="77УА123456", maxLength=20),
+     *             @OA\Property(property="plates", type="string", nullable=true, example="А123БВ777", maxLength=20),
+     *             @OA\Property(property="model", type="string", nullable=true, example="LADA VESTA", maxLength=255),
+     *             @OA\Property(property="type_category", type="string", nullable=true, example="B", maxLength=255),
+     *             @OA\Property(property="issue_year", type="string", nullable=true, example="2020", maxLength=4),
+     *             @OA\Property(property="engine_model", type="string", nullable=true, example="21129", maxLength=100),
+     *             @OA\Property(property="engine_number", type="string", nullable=true, example="1234567", maxLength=100),
+     *             @OA\Property(property="chassis_number", type="string", nullable=true, example="отсутствует", maxLength=100),
+     *             @OA\Property(property="body_number", type="string", nullable=true, example="XTA210990Y2696969", maxLength=100),
+     *             @OA\Property(property="color", type="string", nullable=true, example="белый", maxLength=100)
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Автомобиль успешно создан",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Автомобиль успешно создан"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Автомобиль успешно обновлен",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Автомобиль успешно обновлён"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

@@ -19,8 +19,7 @@ class ContractController extends Controller
      * @OA\Get(
      *     path="/v1/contracts",
      *     summary="Получить список договоров",
-     *     description="Возвращает список всех договоров с пагинацией",
-     *     tags={"Contracts"},
+     *     tags={"Договоры"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Parameter(
      *         name="pageNo",
@@ -41,7 +40,7 @@ class ContractController extends Controller
      *         description="Список договоров",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Contracts list"),
+     *             @OA\Property(property="message", type="string", example="Список договоров"),
      *             @OA\Property(property="items", type="array",
      *                 @OA\Items(ref="#/components/schemas/Contract")
      *             ),
@@ -82,8 +81,7 @@ class ContractController extends Controller
      * @OA\Post(
      *     path="/v1/contracts",
      *     summary="Создать новый договор",
-     *     description="Создает новый договор купли-продажи автомобиля",
-     *     tags={"Contracts"},
+     *     tags={"Договоры"},
      *     security={{"cookieAuth":{}}},
      *     @OA\RequestBody(
      *         required=true,
@@ -103,7 +101,7 @@ class ContractController extends Controller
      *         description="Договор успешно создан",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Contract created successfully"),
+     *             @OA\Property(property="message", type="string", example="Договор успешно создан"),
      *             @OA\Property(property="data", ref="#/components/schemas/Contract")
      *         )
      *     ),
@@ -135,8 +133,7 @@ class ContractController extends Controller
      * @OA\Get(
      *     path="/v1/contracts/{id}",
      *     summary="Получить договор по ID",
-     *     description="Возвращает подробную информацию о договоре",
-     *     tags={"Contracts"},
+     *     tags={"Договоры"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -150,7 +147,7 @@ class ContractController extends Controller
      *         description="Детали договора",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Contract details"),
+     *             @OA\Property(property="message", type="string", example="Детали договора"),
      *             @OA\Property(property="data", ref="#/components/schemas/Contract")
      *         )
      *     ),
@@ -177,8 +174,7 @@ class ContractController extends Controller
      * @OA\Put(
      *     path="/v1/contracts/{id}",
      *     summary="Обновить договор",
-     *     description="Обновляет существующий договор купли-продажи",
-     *     tags={"Contracts"},
+     *     tags={"Договоры"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -204,7 +200,7 @@ class ContractController extends Controller
      *         description="Договор успешно обновлен",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Contract updated successfully"),
+     *             @OA\Property(property="message", type="string", example="Договор успешно обновлён"),
      *             @OA\Property(property="data", ref="#/components/schemas/Contract")
      *         )
      *     ),
@@ -240,8 +236,7 @@ class ContractController extends Controller
      * @OA\Delete(
      *     path="/v1/contracts/{id}",
      *     summary="Удалить договор",
-     *     description="Удаляет договор по ID",
-     *     tags={"Contracts"},
+     *     tags={"Договоры"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Parameter(
      *         name="id",
@@ -255,7 +250,7 @@ class ContractController extends Controller
      *         description="Договор успешно удален",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Contract deleted successfully")
+     *             @OA\Property(property="message", type="string", example="Договор успешно удалён")
      *         )
      *     ),
      *     @OA\Response(

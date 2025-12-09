@@ -5,6 +5,7 @@ use App\Http\Controllers\Api\V1\CarController;
 use App\Http\Controllers\Api\V1\ContractController;
 use App\Http\Controllers\Api\V1\OcrController;
 use App\Http\Controllers\Api\V1\PersonController;
+use App\Http\Controllers\Api\V1\PolicyController;
 use App\Http\Controllers\Api\V1\SubscriptionController;
 use Illuminate\Support\Facades\Route;
 
@@ -21,4 +22,9 @@ Route::prefix('v1')->group(function () {
 
     Route::post('passport', [PersonController::class, 'store']);
     Route::post('car', [CarController::class, 'store']);
+
+    Route::get('policies/main', [PolicyController::class, 'main']);
+    Route::get('policies/user', [PolicyController::class, 'user']);
+    Route::post('policies/sign', [PolicyController::class, 'sign']);
+    Route::post('policies/unsign', [PolicyController::class, 'unsign']);
 });

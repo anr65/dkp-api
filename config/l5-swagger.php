@@ -292,6 +292,14 @@ return [
                  * the tag.
                  */
                 'filter' => env('L5_SWAGGER_UI_FILTERS', true), // true | false
+
+                /*
+                 * Controls how models are shown when the API is first rendered.
+                 * -1: Hide the models section completely
+                 *  0: Show models collapsed
+                 *  1: Show models expanded
+                 */
+                'defaultModelsExpandDepth' => -1,
             ],
 
             'authorization' => [

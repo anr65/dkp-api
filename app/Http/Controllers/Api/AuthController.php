@@ -19,13 +19,10 @@ class AuthController extends Controller
     ) {}
 
     /**
-     * Login via Telegram
-     *
      * @OA\Post(
      *     path="/login",
      *     summary="Авторизация через Telegram",
-     *     description="Двухэтапная авторизация: 1) Отправка кода верификации, 2) Проверка кода и создание сессии",
-     *     tags={"Authentication"},
+     *     tags={"Авторизация"},
      *     @OA\RequestBody(
      *         required=true,
      *         @OA\JsonContent(
@@ -42,13 +39,13 @@ class AuthController extends Controller
      *                 @OA\Schema(
      *                     @OA\Property(property="success", type="boolean", example=true),
      *                     @OA\Property(property="request_id", type="string", example="req_123abc"),
-     *                     @OA\Property(property="message", type="string", example="Verification code sent")
+     *                     @OA\Property(property="message", type="string", example="Код верификации отправлен")
      *                 ),
      *                 @OA\Schema(
      *                     @OA\Property(property="success", type="boolean", example=true),
      *                     @OA\Property(property="user", type="object",
      *                         @OA\Property(property="id", type="integer", example=1),
-     *                         @OA\Property(property="name", type="string", example="John Doe"),
+     *                         @OA\Property(property="name", type="string", example="Иван Иванов"),
      *                         @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg"),
      *                         @OA\Property(property="created_at", type="string", format="date-time")
      *                     )
@@ -61,7 +58,7 @@ class AuthController extends Controller
      *         description="Неверный код верификации",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Invalid verification code")
+     *             @OA\Property(property="message", type="string", example="Неверный код верификации")
      *         )
      *     ),
      *     @OA\Response(
@@ -81,9 +78,6 @@ class AuthController extends Controller
      *         )
      *     )
      * )
-     *
-     * @param Request $request
-     * @return JsonResponse
      */
     public function login(Request $request): JsonResponse
     {
@@ -169,25 +163,20 @@ class AuthController extends Controller
     }
 
     /**
-     * Logout user
-     *
      * @OA\Post(
      *     path="/logout",
      *     summary="Выход из системы",
-     *     description="Завершение сессии пользователя",
-     *     tags={"Authentication"},
+     *     tags={"Авторизация"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Response(
      *         response=200,
      *         description="Успешный выход",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Logged out successfully")
+     *             @OA\Property(property="message", type="string", example="Выход выполнен успешно")
      *         )
      *     )
      * )
-     *
-     * @return JsonResponse
      */
     public function logout(): JsonResponse
     {
@@ -200,13 +189,10 @@ class AuthController extends Controller
     }
 
     /**
-     * Get current user info
-     *
      * @OA\Get(
      *     path="/current",
      *     summary="Получить данные текущего пользователя",
-     *     description="Возвращает информацию о текущем авторизованном пользователе",
-     *     tags={"Authentication"},
+     *     tags={"Авторизация"},
      *     security={{"cookieAuth":{}}},
      *     @OA\Response(
      *         response=200,
@@ -215,7 +201,7 @@ class AuthController extends Controller
      *             @OA\Property(property="success", type="boolean", example=true),
      *             @OA\Property(property="user", type="object",
      *                 @OA\Property(property="id", type="integer", example=1),
-     *                 @OA\Property(property="name", type="string", example="John Doe"),
+     *                 @OA\Property(property="name", type="string", example="Иван Иванов"),
      *                 @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg"),
      *                 @OA\Property(property="created_at", type="string", format="date-time"),
      *                 @OA\Property(property="sub", type="object", nullable=true,
@@ -232,12 +218,10 @@ class AuthController extends Controller
      *         description="Пользователь не авторизован",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=false),
-     *             @OA\Property(property="message", type="string", example="Unauthenticated")
+     *             @OA\Property(property="message", type="string", example="Не авторизован")
      *         )
      *     )
      * )
-     *
-     * @return JsonResponse
      */
     public function current(): JsonResponse
     {

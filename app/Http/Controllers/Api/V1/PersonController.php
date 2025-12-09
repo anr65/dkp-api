@@ -12,6 +12,62 @@ use Illuminate\Support\Facades\DB;
 
 class PersonController extends Controller
 {
+    /**
+     * @OA\Post(
+     *     path="/v1/passport",
+     *     summary="Создать или обновить персону",
+     *     tags={"Персоны"},
+     *     security={{"cookieAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\JsonContent(
+     *             required={"surname", "name", "passport"},
+     *             @OA\Property(property="id", type="integer", nullable=true, description="ID персоны для обновления", example=1),
+     *             @OA\Property(property="surname", type="string", example="Иванов", maxLength=255),
+     *             @OA\Property(property="name", type="string", example="Иван", maxLength=255),
+     *             @OA\Property(property="fathername", type="string", nullable=true, example="Иванович", maxLength=255),
+     *             @OA\Property(property="birthdate", type="string", nullable=true, example="01.01.1990", description="Дата рождения (форматы: d.m.Y, d/m/Y, Y-m-d)"),
+     *             @OA\Property(property="country", type="string", nullable=true, example="Россия", maxLength=255),
+     *             @OA\Property(property="index", type="string", nullable=true, example="123456", maxLength=20),
+     *             @OA\Property(property="region", type="string", nullable=true, example="Московская область", maxLength=255),
+     *             @OA\Property(property="avatar", type="string", nullable=true, example="https://example.com/avatar.jpg", maxLength=500),
+     *             @OA\Property(property="passport", type="object", required={"serie", "number"},
+     *                 @OA\Property(property="id", type="integer", nullable=true, description="ID паспорта для обновления", example=1),
+     *                 @OA\Property(property="serie", type="string", example="4500", maxLength=10),
+     *                 @OA\Property(property="number", type="string", example="123456", maxLength=20),
+     *                 @OA\Property(property="issuer", type="string", nullable=true, example="ОВД г. Москвы", maxLength=500),
+     *                 @OA\Property(property="issue_date", type="string", nullable=true, example="01.01.2010", description="Дата выдачи (форматы: d.m.Y, d/m/Y, Y-m-d)")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=201,
+     *         description="Персона успешно создана",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Персона успешно создана"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Person")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Персона успешно обновлена",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Персона успешно обновлена"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Person")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="message", type="string"),
+     *             @OA\Property(property="errors", type="object")
+     *         )
+     *     )
+     * )
+     */
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([

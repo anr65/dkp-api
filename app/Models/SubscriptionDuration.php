@@ -31,4 +31,9 @@ class SubscriptionDuration extends Model
     {
         return $this->hasMany(SubToUser::class, 'sub_dur_id');
     }
+
+    public function getFullAttribute(): string
+    {
+        return $this->days . ' дн. / ' . $this->price . ' ₽';
+    }
 }

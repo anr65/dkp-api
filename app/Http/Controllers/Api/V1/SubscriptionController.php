@@ -13,14 +13,13 @@ class SubscriptionController extends Controller
      * @OA\Get(
      *     path="/v1/subs/available",
      *     summary="Получить доступные подписки",
-     *     description="Возвращает список доступных для покупки подписок со сроками действия и ценами",
-     *     tags={"Subscriptions"},
+     *     tags={"Подписки"},
      *     @OA\Response(
      *         response=200,
      *         description="Список доступных подписок",
      *         @OA\JsonContent(
      *             @OA\Property(property="success", type="boolean", example=true),
-     *             @OA\Property(property="message", type="string", example="Available subscriptions"),
+     *             @OA\Property(property="message", type="string", example="Доступные подписки"),
      *             @OA\Property(property="data", type="array",
      *                 @OA\Items(
      *                     @OA\Property(property="id", type="integer", example=1),

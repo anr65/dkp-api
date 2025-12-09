@@ -18,6 +18,41 @@ class OcrController extends Controller
         private YandexOcrService $ocrService
     ) {}
 
+    /**
+     * @OA\Post(
+     *     path="/v1/ocr/passport",
+     *     summary="Распознать паспорт",
+     *     tags={"Распознавание"},
+     *     security={{"cookieAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"file"},
+     *                 @OA\Property(property="file", type="string", format="binary", description="Изображение паспорта (jpeg, jpg, png, pdf, max 20MB)")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="Паспорт успешно распознан",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="Passport recognized successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Person")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка распознавания или валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to recognize passport")
+     *         )
+     *     )
+     * )
+     */
     public function passport(Request $request): JsonResponse
     {
         $request->validate([
@@ -61,6 +96,41 @@ class OcrController extends Controller
         ]);
     }
 
+    /**
+     * @OA\Post(
+     *     path="/v1/ocr/sts",
+     *     summary="Распознать СТС",
+     *     tags={"Распознавание"},
+     *     security={{"cookieAuth":{}}},
+     *     @OA\RequestBody(
+     *         required=true,
+     *         @OA\MediaType(
+     *             mediaType="multipart/form-data",
+     *             @OA\Schema(
+     *                 required={"file"},
+     *                 @OA\Property(property="file", type="string", format="binary", description="Изображение СТС (jpeg, jpg, png, pdf, max 20MB)")
+     *             )
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=200,
+     *         description="СТС успешно распознан",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=true),
+     *             @OA\Property(property="message", type="string", example="STS recognized successfully"),
+     *             @OA\Property(property="data", ref="#/components/schemas/Car")
+     *         )
+     *     ),
+     *     @OA\Response(
+     *         response=422,
+     *         description="Ошибка распознавания или валидации",
+     *         @OA\JsonContent(
+     *             @OA\Property(property="success", type="boolean", example=false),
+     *             @OA\Property(property="message", type="string", example="Failed to recognize STS")
+     *         )
+     *     )
+     * )
+     */
     public function sts(Request $request): JsonResponse
     {
         $request->validate([

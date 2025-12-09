@@ -1,11 +1,7 @@
 {
     "openapi": "3.0.0",
     "info": {
-        "title": "ДКП API Documentation",
-        "description": "API документация для системы договоров купли-продажи автомобилей",
-        "contact": {
-            "email": "support@example.com"
-        },
+        "title": "ДКП API",
         "version": "1.0.0"
     },
     "servers": [
@@ -18,10 +14,9 @@
         "/login": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Авторизация"
                 ],
                 "summary": "Авторизация через Telegram",
-                "description": "Двухэтапная авторизация: 1) Отправка кода верификации, 2) Проверка кода и создание сессии",
                 "operationId": "67d6d0fdd54fba132e1b6f55ca254183",
                 "requestBody": {
                     "required": true,
@@ -69,7 +64,7 @@
                                                 },
                                                 "message": {
                                                     "type": "string",
-                                                    "example": "Verification code sent"
+                                                    "example": "Код верификации отправлен"
                                                 }
                                             },
                                             "type": "object"
@@ -88,7 +83,7 @@
                                                         },
                                                         "name": {
                                                             "type": "string",
-                                                            "example": "John Doe"
+                                                            "example": "Иван Иванов"
                                                         },
                                                         "avatar": {
                                                             "type": "string",
@@ -122,7 +117,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Invalid verification code"
+                                            "example": "Неверный код верификации"
                                         }
                                     },
                                     "type": "object"
@@ -174,10 +169,9 @@
         "/logout": {
             "post": {
                 "tags": [
-                    "Authentication"
+                    "Авторизация"
                 ],
                 "summary": "Выход из системы",
-                "description": "Завершение сессии пользователя",
                 "operationId": "28d48c13fca984400ac8de99f54ee13a",
                 "responses": {
                     "200": {
@@ -192,7 +186,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Logged out successfully"
+                                            "example": "Выход выполнен успешно"
                                         }
                                     },
                                     "type": "object"
@@ -211,10 +205,9 @@
         "/current": {
             "get": {
                 "tags": [
-                    "Authentication"
+                    "Авторизация"
                 ],
                 "summary": "Получить данные текущего пользователя",
-                "description": "Возвращает информацию о текущем авторизованном пользователе",
                 "operationId": "5db954026e7615039741f5dc353bc15f",
                 "responses": {
                     "200": {
@@ -235,7 +228,7 @@
                                                 },
                                                 "name": {
                                                     "type": "string",
-                                                    "example": "John Doe"
+                                                    "example": "Иван Иванов"
                                                 },
                                                 "avatar": {
                                                     "type": "string",
@@ -245,6 +238,28 @@
                                                 "created_at": {
                                                     "type": "string",
                                                     "format": "date-time"
+                                                },
+                                                "sub": {
+                                                    "properties": {
+                                                        "id": {
+                                                            "type": "integer",
+                                                            "example": 778
+                                                        },
+                                                        "name": {
+                                                            "type": "string",
+                                                            "example": "Договоры без ограничений"
+                                                        },
+                                                        "duration": {
+                                                            "type": "integer",
+                                                            "example": 365
+                                                        },
+                                                        "valid_thru": {
+                                                            "type": "string",
+                                                            "example": "15.09.2026"
+                                                        }
+                                                    },
+                                                    "type": "object",
+                                                    "nullable": true
                                                 }
                                             },
                                             "type": "object"
@@ -267,7 +282,177 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Unauthenticated"
+                                            "example": "Не авторизован"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/car": {
+            "post": {
+                "tags": [
+                    "Автомобили"
+                ],
+                "summary": "Создать или обновить автомобиль",
+                "operationId": "cacc14877e9e26de2072a194847523ad",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "id": {
+                                        "description": "ID автомобиля для обновления",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "vin": {
+                                        "type": "string",
+                                        "maxLength": 50,
+                                        "example": "XTA210990Y2696969",
+                                        "nullable": true
+                                    },
+                                    "sts": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "77УУ123456",
+                                        "nullable": true
+                                    },
+                                    "pts": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "77УА123456",
+                                        "nullable": true
+                                    },
+                                    "plates": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "А123БВ777",
+                                        "nullable": true
+                                    },
+                                    "model": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "LADA VESTA",
+                                        "nullable": true
+                                    },
+                                    "type_category": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "B",
+                                        "nullable": true
+                                    },
+                                    "issue_year": {
+                                        "type": "string",
+                                        "maxLength": 4,
+                                        "example": "2020",
+                                        "nullable": true
+                                    },
+                                    "engine_model": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "21129",
+                                        "nullable": true
+                                    },
+                                    "engine_number": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "1234567",
+                                        "nullable": true
+                                    },
+                                    "chassis_number": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "отсутствует",
+                                        "nullable": true
+                                    },
+                                    "body_number": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "XTA210990Y2696969",
+                                        "nullable": true
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "maxLength": 100,
+                                        "example": "белый",
+                                        "nullable": true
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Автомобиль успешно создан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобиль успешно создан"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Car"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Автомобиль успешно обновлен",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Автомобиль успешно обновлён"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Car"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
                                         }
                                     },
                                     "type": "object"
@@ -286,10 +471,10 @@
         "/v1/contracts": {
             "get": {
                 "tags": [
-                    "Contracts"
+                    "Договоры"
                 ],
                 "summary": "Получить список договоров",
-                "description": "Возвращает список всех договоров с пагинацией",
+                "description": "Display a listing of the resource.",
                 "operationId": "bdbac4711f02b5891f30b4e4b428b701",
                 "parameters": [
                     {
@@ -328,7 +513,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Contracts list"
+                                            "example": "Список договоров"
                                         },
                                         "items": {
                                             "type": "array",
@@ -372,10 +557,10 @@
             },
             "post": {
                 "tags": [
-                    "Contracts"
+                    "Договоры"
                 ],
                 "summary": "Создать новый договор",
-                "description": "Создает новый договор купли-продажи автомобиля",
+                "description": "Store a newly created resource in storage.",
                 "operationId": "e3ded96a5b39557f9648d1096f18963e",
                 "requestBody": {
                     "required": true,
@@ -446,7 +631,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Contract created successfully"
+                                            "example": "Договор успешно создан"
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/Contract"
@@ -486,10 +671,10 @@
         "/v1/contracts/{id}": {
             "get": {
                 "tags": [
-                    "Contracts"
+                    "Договоры"
                 ],
                 "summary": "Получить договор по ID",
-                "description": "Возвращает подробную информацию о договоре",
+                "description": "Display the specified resource.",
                 "operationId": "b3d9f6c5313123aa3e9b031fd33acb44",
                 "parameters": [
                     {
@@ -516,7 +701,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Contract details"
+                                            "example": "Детали договора"
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/Contract"
@@ -539,10 +724,10 @@
             },
             "put": {
                 "tags": [
-                    "Contracts"
+                    "Договоры"
                 ],
                 "summary": "Обновить договор",
-                "description": "Обновляет существующий договор купли-продажи",
+                "description": "Update the specified resource in storage.",
                 "operationId": "3b5da28a2f500b40ef7fe60719c1fe7d",
                 "parameters": [
                     {
@@ -617,7 +802,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Contract updated successfully"
+                                            "example": "Договор успешно обновлён"
                                         },
                                         "data": {
                                             "$ref": "#/components/schemas/Contract"
@@ -658,10 +843,10 @@
             },
             "delete": {
                 "tags": [
-                    "Contracts"
+                    "Договоры"
                 ],
                 "summary": "Удалить договор",
-                "description": "Удаляет договор по ID",
+                "description": "Remove the specified resource from storage.",
                 "operationId": "2875a4ec610d34760515f5db9974a2f4",
                 "parameters": [
                     {
@@ -688,7 +873,7 @@
                                         },
                                         "message": {
                                             "type": "string",
-                                            "example": "Contract deleted successfully"
+                                            "example": "Договор успешно удалён"
                                         }
                                     },
                                     "type": "object"
@@ -705,6 +890,741 @@
                         "cookieAuth": []
                     }
                 ]
+            }
+        },
+        "/v1/ocr/passport": {
+            "post": {
+                "tags": [
+                    "Распознавание"
+                ],
+                "summary": "Распознать паспорт",
+                "operationId": "749f6bd3d3541af5439c27b1fbcac1bb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "Изображение паспорта (jpeg, jpg, png, pdf, max 20MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Паспорт успешно распознан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Passport recognized successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Person"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка распознавания или валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to recognize passport"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/ocr/sts": {
+            "post": {
+                "tags": [
+                    "Распознавание"
+                ],
+                "summary": "Распознать СТС",
+                "operationId": "fd08663db59d3e481dd50b8f987400cb",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "multipart/form-data": {
+                            "schema": {
+                                "required": [
+                                    "file"
+                                ],
+                                "properties": {
+                                    "file": {
+                                        "description": "Изображение СТС (jpeg, jpg, png, pdf, max 20MB)",
+                                        "type": "string",
+                                        "format": "binary"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "СТС успешно распознан",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "STS recognized successfully"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Car"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка распознавания или валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Failed to recognize STS"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/passport": {
+            "post": {
+                "tags": [
+                    "Персоны"
+                ],
+                "summary": "Создать или обновить персону",
+                "operationId": "c09b45b0c6f4f502aaa8d15599b58f96",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "surname",
+                                    "name",
+                                    "passport"
+                                ],
+                                "properties": {
+                                    "id": {
+                                        "description": "ID персоны для обновления",
+                                        "type": "integer",
+                                        "example": 1,
+                                        "nullable": true
+                                    },
+                                    "surname": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иванов"
+                                    },
+                                    "name": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иван"
+                                    },
+                                    "fathername": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Иванович",
+                                        "nullable": true
+                                    },
+                                    "birthdate": {
+                                        "description": "Дата рождения (форматы: d.m.Y, d/m/Y, Y-m-d)",
+                                        "type": "string",
+                                        "example": "01.01.1990",
+                                        "nullable": true
+                                    },
+                                    "country": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Россия",
+                                        "nullable": true
+                                    },
+                                    "index": {
+                                        "type": "string",
+                                        "maxLength": 20,
+                                        "example": "123456",
+                                        "nullable": true
+                                    },
+                                    "region": {
+                                        "type": "string",
+                                        "maxLength": 255,
+                                        "example": "Московская область",
+                                        "nullable": true
+                                    },
+                                    "avatar": {
+                                        "type": "string",
+                                        "maxLength": 500,
+                                        "example": "https://example.com/avatar.jpg",
+                                        "nullable": true
+                                    },
+                                    "passport": {
+                                        "required": [
+                                            "serie",
+                                            "number"
+                                        ],
+                                        "properties": {
+                                            "id": {
+                                                "description": "ID паспорта для обновления",
+                                                "type": "integer",
+                                                "example": 1,
+                                                "nullable": true
+                                            },
+                                            "serie": {
+                                                "type": "string",
+                                                "maxLength": 10,
+                                                "example": "4500"
+                                            },
+                                            "number": {
+                                                "type": "string",
+                                                "maxLength": 20,
+                                                "example": "123456"
+                                            },
+                                            "issuer": {
+                                                "type": "string",
+                                                "maxLength": 500,
+                                                "example": "ОВД г. Москвы",
+                                                "nullable": true
+                                            },
+                                            "issue_date": {
+                                                "description": "Дата выдачи (форматы: d.m.Y, d/m/Y, Y-m-d)",
+                                                "type": "string",
+                                                "example": "01.01.2010",
+                                                "nullable": true
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Персона успешно создана",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Персона успешно создана"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Person"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "200": {
+                        "description": "Персона успешно обновлена",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Персона успешно обновлена"
+                                        },
+                                        "data": {
+                                            "$ref": "#/components/schemas/Person"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/policies/main": {
+            "get": {
+                "tags": [
+                    "Политики"
+                ],
+                "summary": "Получить список политик конфиденциальности",
+                "operationId": "3cfd0752c8425cb2b5312618f6015cc5",
+                "responses": {
+                    "200": {
+                        "description": "Список политик",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Privacy policies"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Политика конфиденциальности"
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/privacy"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/v1/policies/user": {
+            "get": {
+                "tags": [
+                    "Политики"
+                ],
+                "summary": "Получить статус подписания политик пользователем",
+                "description": "Возвращает список политик с информацией о том, подписал ли их текущий пользователь",
+                "operationId": "6c877098c4fb2553f287904e3645b35a",
+                "responses": {
+                    "200": {
+                        "description": "Список политик со статусом подписания",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Privacy policies of user"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "signed": {
+                                                        "type": "boolean",
+                                                        "example": true
+                                                    },
+                                                    "url": {
+                                                        "type": "string",
+                                                        "example": "https://example.com/privacy"
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/policies/sign": {
+            "post": {
+                "tags": [
+                    "Политики"
+                ],
+                "summary": "Подписать политики",
+                "description": "Подписывает указанные политики для текущего пользователя",
+                "operationId": "89fbb1edcc020d7142ddaf2ae0e30a32",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "policies"
+                                ],
+                                "properties": {
+                                    "policies": {
+                                        "description": "Массив ID политик для подписания",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Политики успешно подписаны",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Policies signed successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/policies/unsign": {
+            "post": {
+                "tags": [
+                    "Политики"
+                ],
+                "summary": "Отозвать подписание политик",
+                "description": "Отзывает подписание указанных политик для текущего пользователя",
+                "operationId": "0c7705259f1f7ecec85b3f5a25ff8c40",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "policies"
+                                ],
+                                "properties": {
+                                    "policies": {
+                                        "description": "Массив ID политик для отзыва",
+                                        "type": "array",
+                                        "items": {
+                                            "type": "integer",
+                                            "example": 1
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Подписание политик успешно отозвано",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Policies unsigned successfully"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "401": {
+                        "description": "Пользователь не авторизован",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": false
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Unauthenticated"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Ошибка валидации",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "message": {
+                                            "type": "string"
+                                        },
+                                        "errors": {
+                                            "type": "object"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [
+                    {
+                        "cookieAuth": []
+                    }
+                ]
+            }
+        },
+        "/v1/subs/available": {
+            "get": {
+                "tags": [
+                    "Подписки"
+                ],
+                "summary": "Получить доступные подписки",
+                "operationId": "fcb0c100d2b543e9cfadffde74c20f11",
+                "responses": {
+                    "200": {
+                        "description": "Список доступных подписок",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "success": {
+                                            "type": "boolean",
+                                            "example": true
+                                        },
+                                        "message": {
+                                            "type": "string",
+                                            "example": "Доступные подписки"
+                                        },
+                                        "data": {
+                                            "type": "array",
+                                            "items": {
+                                                "properties": {
+                                                    "id": {
+                                                        "type": "integer",
+                                                        "example": 1
+                                                    },
+                                                    "name": {
+                                                        "type": "string",
+                                                        "example": "Договоры без ограничений"
+                                                    },
+                                                    "durations": {
+                                                        "type": "array",
+                                                        "items": {
+                                                            "properties": {
+                                                                "id": {
+                                                                    "type": "integer",
+                                                                    "example": 1
+                                                                },
+                                                                "days": {
+                                                                    "type": "integer",
+                                                                    "example": 30
+                                                                },
+                                                                "price": {
+                                                                    "type": "number",
+                                                                    "example": 299
+                                                                }
+                                                            },
+                                                            "type": "object"
+                                                        }
+                                                    }
+                                                },
+                                                "type": "object"
+                                            }
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     },
@@ -904,12 +1824,25 @@
     },
     "tags": [
         {
-            "name": "Authentication",
-            "description": "Authentication"
+            "name": "Авторизация"
         },
         {
-            "name": "Contracts",
-            "description": "Contracts"
+            "name": "Автомобили"
+        },
+        {
+            "name": "Договоры"
+        },
+        {
+            "name": "Распознавание"
+        },
+        {
+            "name": "Персоны"
+        },
+        {
+            "name": "Политики"
+        },
+        {
+            "name": "Подписки"
         }
     ]
 }
